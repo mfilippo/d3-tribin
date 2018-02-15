@@ -1,0 +1,34 @@
+{
+  "name": "d3-tribin",
+  "version": "0.0.1",
+  "description": "Group two-dimensional points into triangular bins.",
+  "keywords": [
+    "d3",
+    "d3-module",
+    "tribin",
+    "triangular",
+    "binning"
+  ],
+  "license": "BSD-3-Clause",
+  "main": "build/d3-tribin.js",
+  "jsnext:main": "index",
+  "homepage": "https://github.com/mfilippo/d3-tribin",
+  "author": {
+    "name": "Matteo Filipponi"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mfilippo/d3-tribin.git"
+  },
+  "scripts": {
+    "pretest": "rm -rf build && mkdir build && rollup -f umd -n d3 -o build/d3-tribin.js -- index.js",
+    "test": "tape 'test/**/*-test.js'",
+    "prepublish": "npm run test && uglifyjs build/d3-tribin.js -c -m -o build/d3-tribin.min.js",
+    "postpublish": "zip -j build/d3-tribin.zip -- LICENSE README.md build/d3-tribin.js build/d3-tribin.min.js"
+  },
+  "devDependencies": {
+    "rollup": "0.27",
+    "tape": "4",
+    "uglify-js": "2"
+  }
+}
