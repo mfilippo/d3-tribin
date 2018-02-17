@@ -28,7 +28,7 @@
   },
   "devDependencies": {
     "rollup": "0.27",
-    "tape": "4",
+    "tape": "^4.8.0",
     "uglify-js": "2"
   }
 }
