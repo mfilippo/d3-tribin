@@ -16,63 +16,48 @@ export default function() {
 		outR,
 		h,
 		x = pointX,
-		y = pointY,
-		x0 = 0,
-		y0 = 0,
-		x1 = 1,
-		y1 = 1;
+		y = pointY;
 
 	function tribin(points) {
-		var binsById = {}, bins = [], i, n = points.length;
+		var binsById = {},
+			bins = [],
+			i,
+			n = points.length;
 
 		for (i = 0; i < n; ++i) {
 			if (isNaN(px = +x.call(null, point = points[i], i, points)) || isNaN(py = +y.call(null, point, i, points))) continue;
 
-			var point, px, py,
+			var point,
+				px,
+				py,
 				row = Math.floor(py / h),
-				col,
-				rowIsOdd = row % 2 == 1;
+				rowIsOdd = row % 2 == 1,
+				col = (rowIsOdd ? Math.floor((px + s / 2) / s) : Math.floor(px / s)),
+				offY = row * h,
+				offX = (rowIsOdd ? col * s - s / 2 : col * s),
+				relY = py - offY,
+				relX = px - offX,
+	        	binX = offX + s / 2,
+	        	binY = offY + outR,
+	        	binRotation = 0,
+	        	triangleCol = col * 2 + 1,
+	        	triangleRow = row,
+	        	m = h / (s / 2);
 
-			if (rowIsOdd) {
-	            col = Math.floor((px + s / 2) / s);
-	        } else {
-	            col = Math.floor(px / s);
-	        }
-
-	        var offY = row * h;
-	        var offX;
-
-	        if (rowIsOdd) {
-	            offX = col * s - s / 2;
-	        } else {
-	            offX = col * s;
-	        }
-
-	        var relY = py - offY;
-	        var relX = px - offX;
-
-	        var binX = offX + s / 2;
-	        var binY = offY + outR;
-	        var binRotation = 0;
-
-	        var c = h;
-        	var m = c / (s / 2);
-
-        	var triangleCol = col * 2 + 1, triangleRow = row;
-
-        	if (relY < (-m * relX) + c) {
+        	if (relY < (-m * relX) + h) {
         		triangleCol--;
         		binX = offX;
         		binY = offY + inR;
         		binRotation = Math.PI;
-        	} else if (relY < (m * relX) - c) {
+        	} else if (relY < (m * relX) - h) {
         		triangleCol++;
         		binX = offX + s;
         		binY = offY + inR;
         		binRotation = Math.PI;
         	}
 	        
-        	var id = triangleRow + "-" + triangleCol, bin = binsById[id];
+        	var id = triangleRow + "-" + triangleCol,
+        		bin = binsById[id];
         	if (bin) bin.push(point);
         	else {
         		bins.push(bin = binsById[id] = [point]);
@@ -106,14 +91,6 @@ export default function() {
 		return tribin.triangle(s, d.rotation, [d.x, d.y]);
 	}
 
-	tribin.centers = function() {
-		// TODO
-	}
-
-	tribin.mesh = function() {
-		// TODO
-	}
-
 	tribin.x = function(_) {
 		return arguments.length ? (x = _, tribin) : x;
 	};
@@ -124,14 +101,6 @@ export default function() {
 
 	tribin.side = function(_) {
 		return arguments.length ? (s = +_, inR = s * sqrt3 / 6, outR = s * sqrt3 / 3, h = inR + outR, tribin) : s;
-	};
-
-	tribin.size = function(_) {
-		return arguments.length ? (x0 = y0 = 0, x1 = +_[0], y1 = +_[1], tribin) : [x1 - x0, y1 - y0];
-	};
-
-	tribin.extent = function(_) {
-		return arguments.length ? (x0 = +_[0][0], y0 = +_[0][1], x1 = +_[1][0], y1 = +_[1][1], tribin) : [[x0, y0], [x1, y1]];
 	};
 
 	return tribin.side(1);
