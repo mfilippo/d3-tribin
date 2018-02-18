@@ -83,12 +83,15 @@ export default function() {
 	}
 
 	tribin.triangle = function(side, rotation, center) {
+		side = (side == null ? s : +side),
+		rotation = (rotation == null ? 0 : +rotation);
 		var moveCenter = (center == null ? "" : "M" + center[0] + "," + center[1]);
-		return moveCenter + "m" + triangle(side == null ? s : +side, rotation == null ? 0 : +rotation).join("l") + "z";
+		return moveCenter + "m" + triangle(side, rotation).join("l") + "z";
 	}
 
-	tribin.triangleBin = function(d) {
-		return tribin.triangle(s, d.rotation, [d.x, d.y]);
+	tribin.triangleFromBin = function(d, side) {
+		side = (side == null ? s : +side);
+		return tribin.triangle(side, d.rotation, [d.x, d.y]);
 	}
 
 	tribin.x = function(_) {
