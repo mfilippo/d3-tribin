@@ -7,7 +7,7 @@ This D3 plugin is largely inspired by the d3-hexbin but instead of using hexagon
 
 ## Installing
 
-If you use NPM, `npm install d3-tribin`. Otherwise, download the [latest release](https://github.com/d3/d3-tribin/releases/latest).
+If you use NPM, `npm install d3-tribin`. Otherwise, download the [latest release](https://github.com/mfilippo/d3-tribin/releases/latest).
 
 ## API Reference
 
