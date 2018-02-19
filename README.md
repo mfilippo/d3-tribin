@@ -1,9 +1,8 @@
 # d3-tribin
 
-This D3 plugin is largely inspired by the d3-hexbin but instead of using hexagons to bin points it uses triangles. It is therefore used to group two-dimensional points into (equilateral) triangular bins. It supports color encoding, area encoding, or both.
+This D3 plugin is largely inspired by the [d3-hexbin](https://github.com/d3/d3-hexbin) plugin but instead of using hexagons to bin points it uses triangles. It is therefore used to group two-dimensional points into (equilateral) triangular bins. It supports color encoding, area encoding, or both.
 
-<img alt="Hexagonal Binning (Color)" src="img/color.png" width="420" height="219">
-<img alt="Hexagonal Binning (Area)" src="img/area.png" width="420" height="219">
+<img alt="Hexagonal Binning (Color)" src="img/color.png" width="420" height="219"> <img alt="Hexagonal Binning (Area)" src="img/area.png" width="420" height="219">
 
 ## Installing
 
