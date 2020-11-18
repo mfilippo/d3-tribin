@@ -1,6 +1,6 @@
 {
   "name": "d3-tribin",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Group two-dimensional points into triangular bins.",
   "keywords": [
     "d3",
