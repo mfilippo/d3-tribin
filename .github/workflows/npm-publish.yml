@@ -1,24 +1,88 @@
-# ====================================================
-# Build, test, and publish the package to NPM registry
-# when a new Release is created from Github.
-# ====================================================
 
-name: Build, test and publish
+name: Create Release
 
 on:
-  release:
-    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version:"
+        required: true
+        type: string
+
+env:
+  NODE_VERSION: 14
+  TARGET_VERSION: ${{ inputs.version }}
+  GIT_TAG: v${{ inputs.version }}
 
 jobs:
-  publish-npm:
+
+  update-version:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+
+      - name: git checkout
+        uses: actions/checkout@v2
+
+      - name: setup node
+        uses: actions/setup-node@v2
         with:
-          node-version: 14
+          node-version: ${{ env.NODE_VERSION }}
           registry-url: https://registry.npmjs.org/
-      - run: npm ci
-      - run: npm publish
+
+      - name: git config
+        run: |
+          git config user.name "GitHub Runner"
+          git config user.email "<>"
+      
+      - name: npm version
+        run: npm version ${{ env.TARGET_VERSION }} -m "[Auto] Update version to ${{ env.TARGET_VERSION }}"
+      
+      - name: push commit and tag
+        run: git push --atomic origin ${{ github.ref_name }} ${{ env.GIT_TAG }}
+
+  create-release:
+    needs: update-version
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: git checkout
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ env.GIT_TAG }}
+      
+      - name: create release
+        uses: actions/github-script@v5
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            try {
+              await github.rest.repos.createRelease({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                tag_name: "${{ env.GIT_TAG }}",
+                generate_release_notes: true,
+              });
+            } catch (error) {
+              core.setFailed(error.message);
+            }
+
+  publish-npm:
+    needs: update-version
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: git checkout
+        uses: actions/checkout@v2
+
+      - name: setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: https://registry.npmjs.org/
+
+      - name: npm publish
         env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+        run: |
+          npm ci
+          npm publish
